@@ -1,3 +1,5 @@
+const _ = require('lodash');
+
 const { DataSource } = require('apollo-datasource');
 
 const sessions = require('../data/sessions.json');
@@ -10,8 +12,8 @@ class SessionAPI extends DataSource {
   initialize(config) {}
 
   //method for getting data out of the data source
-  getSessions() {
-    return sessions;
+  getSessions(args) {
+    return _.filter(sessions, args);
   }
 
   getSessionById(id) {
