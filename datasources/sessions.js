@@ -1,16 +1,18 @@
-const sessions = require('../data/sessions.json');
 const { DataSource } = require('apollo-datasource');
 
+const sessions = require('../data/sessions.json');
+
 class SessionAPI extends DataSource {
-    constructor() {
-        super()
-    }
+  constructor() {
+    super();
+  }
 
-    initialize(config) { }
+  initialize(config) {}
 
-    getSessions() {
-        return sessions;
-    }
+  //method for getting data out of the data source
+  getSessions() {
+    return sessions;
+  }
 }
 
 module.exports = SessionAPI;

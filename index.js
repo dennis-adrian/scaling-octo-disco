@@ -1,49 +1,55 @@
 const { ApolloServer, gql } = require('apollo-server');
 
-const sessions = require('./data/sessions.json');
+const SessionAPI = require('./datasources/sessions');
 
 /**
- * Defining the GraphQL Schema 
+ * Defining the GraphQL Schema
  */
 const typeDefs = gql`
-type Query {
+  type Query {
     sessions: [Session]
-}
-type Session {
-    id: ID!,
-    title: String!,
-    description: String,
-    startsAt: String,
-    endsAt: String,
-    room: String,
-    day: String,
-    format: String,
-    track: String @deprecated(reason: "This is the reason why the field will be remove"),
+  }
+  type Session {
+    id: ID!
+    title: String!
+    description: String
+    startsAt: String
+    endsAt: String
+    room: String
+    day: String
+    format: String
+    track: String
+      @deprecated(reason: "This is the reason why the field will be remove")
     level: String
-}
-`
+  }
+`;
 
 /**
  * Creating a resolver map object
  */
 const resolvers = {
-    Query: {
-        sessions: () => {
-            return sessions
-        }
-    }
-}
+  Query: {
+    sessions: (parent, args, context, info) => {
+      return context.dataSources.sessionAPI.getSessions();
+    },
+  },
+};
+
+/**
+ * Defining the data source
+ */
+const dataSources = () => ({
+  sessionAPI: new SessionAPI(),
+});
 
 /**
  * Instantiating an apollo server object
  */
-const server = new ApolloServer({ typeDefs, resolvers });
+const server = new ApolloServer({ typeDefs, resolvers, dataSources });
 
 /**
  * starting the server
  */
-server
-    .listen({ port: process.env.PORT || 4000 })
-    .then(({ url }) => {
-        console.log(`graphQL running at ${url}`)
-    });
+server.listen({ port: process.env.PORT || 4000 }).then(({ url }) => {
+  console.log(`graphQL running at ${url}`);
+});
